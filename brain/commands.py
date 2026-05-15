@@ -1,65 +1,112 @@
+import os
+import webbrowser
+import pywhatkit
+
 from voice.speak import speak
 
-from automation.apps import *
-from automation.browser import *
-
-from tools.youtube import play_song
 
 def execute_command(command):
 
-    # CHROME
-    if "chrome" in command:
+    command = command.lower()
 
-        speak("Opening Chrome")
+    # Open Brave
+    if "open brave" in command:
 
-        open_chrome()
+        speak("Okay Sir, Opening Brave")
+        os.system("start brave")
+        return True
+
+    # Open Chrome (Gmail profile open)
+    elif "open chrome" in command:
+
+        speak("Okay Sir, Opening Chrome")
+
+        chrome_path = "C:/Program Files/Google/Chrome/Application/chrome.exe"
+
+        url = "https://mail.google.com/mail/u/0/#inbox"
+
+        os.system(f'start "" "{chrome_path}" {url}')
 
         return True
 
-    # NOTEPAD
-    elif "notepad" in command:
+    # Open My PC
+    elif "open my pc" in command:
 
-        speak("Opening Notepad")
-
-        open_notepad()
-
+        speak("Opening This PC")
+        os.startfile("C:\\")
         return True
 
-    # YOUTUBE
-    elif "youtube" in command and "play" not in command:
+    # Open VS Code
+    elif "open vs code" in command or "open vscode" in command:
 
-        speak("Opening YouTube")
-
-        open_youtube()
-
+        speak("Opening VS Code")
+        os.system("code .")
         return True
 
-    # GOOGLE
-    elif "google" in command:
+    # Shutdown PC
+    elif "shutdown my pc" in command or "shut down my pc" in command:
 
-        speak("Opening Google")
-
-        open_google()
-
+        speak("Shutting down your PC")
+        os.system("shutdown /s /t 5")
         return True
 
-    # PLAY SONG
-    elif "play" in command:
+    # Restart PC
+    elif "restart my pc" in command:
 
-        song = command.replace("play", "")
-
-        speak(f"Playing {song}")
-
-        play_song(song)
-
+        speak("Restarting your PC")
+        os.system("shutdown /r /t 5")
         return True
 
-    # CHATGPT
-    elif "chat gpt" in command:
+    # Sleep PC (ONLY ONE VERSION)
+    elif "sleep my pc" in command or "make my pc sleep" in command:
 
-        speak("Opening ChatGPT")
+        speak("Putting your PC to sleep")
+        os.system("rundll32.exe powrprof.dll,SetSuspendState Sleep")
+        return True
 
-        open_chatgpt()
+    # Open YouTube
+    elif "open youtube" in command:
+
+        speak("Okay Sir, Opening YouTube")
+        webbrowser.open("https://youtube.com")
+        return True
+
+    # Open WhatsApp
+    elif "open whatsapp" in command:
+
+        speak("Okay Sir, Opening WhatsApp")
+        os.system("start whatsapp:")
+        return True
+
+    # Open Notepad
+    elif "open notepad" in command:
+
+        speak("Okay Sir, Opening Notepad")
+        os.system("start notepad")
+        return True
+
+    # PLAY MUSIC
+    elif "play music" in command:
+
+        speak("Playing music")
+
+        song = command.replace("play music", "")
+        song = song.replace("in brave", "")
+        song = song.replace("on youtube", "")
+        song = song.strip()
+
+        if song == "":
+            song = "trending songs"
+
+        brave_path = "C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe %s"
+
+        try:
+            browser = webbrowser.get(brave_path)
+            url = f"https://www.youtube.com/results?search_query={song}"
+            browser.open(url)
+
+        except:
+            pywhatkit.playonyt(song)
 
         return True
 

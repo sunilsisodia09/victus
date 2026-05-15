@@ -1,22 +1,7 @@
 import requests
 from config import AI_MODEL
 
-
-def ask_ai(command):
-
-    prompt = f"""
-You are Victus, a friendly AI assistant.
-
-Rules:
-- Talk like a real human friend
-- Mix Hindi + English naturally
-- Keep responses short and natural
-- Do not act like a robot
-- Be casual, funny sometimes
-
-User: {command}
-Assistant:
-"""
+def ask_ai(prompt):
 
     try:
 

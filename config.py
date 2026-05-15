@@ -1,5 +1,7 @@
 ASSISTANT_NAME = "Victus"
-
-VOICE_RATE = 170
-
+WAKE_WORDS = ["victus"]
 OLLAMA_MODEL = "llama3"
+VOICE_RATE = 175
+
+VOICE_RATE = 165
+AI_MODEL = "phi3"
