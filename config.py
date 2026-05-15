@@ -1,0 +1,5 @@
+ASSISTANT_NAME = "Victus"
+
+VOICE_RATE = 170
+
+OLLAMA_MODEL = "llama3"

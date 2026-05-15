@@ -1,0 +1,9 @@
+pyttsx3
+SpeechRecognition
+pyaudio
+pyautogui
+requests
+keyboard
+pillow
+pywhatkit
+psutil
