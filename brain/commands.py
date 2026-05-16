@@ -14,16 +14,9 @@ from voice.speak import speak
 
 contacts = {
     "shubham sharma": "+917454966112",
-    "aman": "+91xxxxxxxxxx",
+    "sandeep singh": "+91xxxxxxxxxx",
     "rohit": "+91xxxxxxxxxx"
 }
-
-
-# =====================================================
-# CURRENT SONG
-# =====================================================
-
-current_song = ""
 
 
 # =====================================================
@@ -32,12 +25,12 @@ current_song = ""
 
 def execute_command(command):
 
-    global current_song
+    command = command.lower().strip()
 
-    command = command.lower()
+    print("COMMAND:", command)
 
     # =====================================================
-    # SEND WHATSAPP MESSAGE
+    # WHATSAPP MESSAGE
     # =====================================================
 
     if "message" in command:
@@ -47,7 +40,7 @@ def execute_command(command):
             contact_name = None
 
             # FIND CONTACT
-            for name in contacts:
+            for name in contacts.keys():
 
                 if name in command:
                     contact_name = name
@@ -63,32 +56,43 @@ def execute_command(command):
             # REMOVE EXTRA WORDS
             message = command
 
-            message = message.replace("open whatsapp", "")
-            message = message.replace("and", "")
-            message = message.replace("send", "")
-            message = message.replace("message", "")
-            message = message.replace("to", "")
-            message = message.replace(contact_name, "")
+            remove_words = [
+                "open whatsapp",
+                "open whatsapp and",
+                "send",
+                "message",
+                "to",
+                "and",
+                contact_name
+            ]
+
+            for word in remove_words:
+                message = message.replace(word, "")
+
             message = message.strip()
 
+            # DEFAULT MESSAGE
             if message == "":
                 message = "Hello"
 
-            speak(f"Opening chat with {contact_name}")
+            print("CONTACT:", contact_name)
+            print("MESSAGE:", message)
+
+            speak(f"Sending message to {contact_name}")
 
             encoded_message = urllib.parse.quote(message)
 
             whatsapp_url = (
-                f"https://web.whatsapp.com/send?phone={number}"
-                f"&text={encoded_message}"
+                f"https://web.whatsapp.com/send"
+                f"?phone={number}&text={encoded_message}"
             )
 
             webbrowser.open(whatsapp_url)
 
-            # WAIT FOR WHATSAPP LOAD
-            time.sleep(10)
+            # WAIT FOR LOAD
+            time.sleep(12)
 
-            # PRESS ENTER TO SEND MESSAGE
+            # SEND MESSAGE
             pyautogui.press("enter")
 
             speak("Message sent")
@@ -97,9 +101,109 @@ def execute_command(command):
 
         except Exception as e:
 
-            print("WhatsApp Error:", e)
+            print("WHATSAPP ERROR:", e)
 
             speak("Message failed")
+
+            return True
+
+    # =====================================================
+    # WHATSAPP VOICE CALL
+    # =====================================================
+
+    elif "call" in command and "video" not in command:
+
+        try:
+
+            contact_name = None
+
+            for name in contacts.keys():
+
+                if name in command:
+                    contact_name = name
+                    break
+
+            if not contact_name:
+
+                speak("Contact not found")
+                return True
+
+            number = contacts[contact_name]
+
+            speak(f"Calling {contact_name}")
+
+            whatsapp_url = (
+                f"https://web.whatsapp.com/send?phone={number}"
+            )
+
+            webbrowser.open(whatsapp_url)
+
+            # WAIT FOR CHAT LOAD
+            time.sleep(12)
+
+            # TAB TO CALL BUTTON
+            for i in range(8):
+                pyautogui.press("tab")
+
+            pyautogui.press("enter")
+
+            return True
+
+        except Exception as e:
+
+            print("CALL ERROR:", e)
+
+            speak("Call failed")
+
+            return True
+
+    # =====================================================
+    # WHATSAPP VIDEO CALL
+    # =====================================================
+
+    elif "video call" in command:
+
+        try:
+
+            contact_name = None
+
+            for name in contacts.keys():
+
+                if name in command:
+                    contact_name = name
+                    break
+
+            if not contact_name:
+
+                speak("Contact not found")
+                return True
+
+            number = contacts[contact_name]
+
+            speak(f"Starting video call with {contact_name}")
+
+            whatsapp_url = (
+                f"https://web.whatsapp.com/send?phone={number}"
+            )
+
+            webbrowser.open(whatsapp_url)
+
+            # WAIT FOR LOAD
+            time.sleep(12)
+
+            # TAB TO VIDEO CALL BUTTON
+            for i in range(7):
+                pyautogui.press("tab")
+
+            pyautogui.press("enter")
+
+            return True
+
+        except Exception as e:
+
+            print("VIDEO CALL ERROR:", e)
+
+            speak("Video call failed")
 
             return True
 
@@ -116,74 +220,10 @@ def execute_command(command):
         return True
 
     # =====================================================
-    # OPEN YOUTUBE
-    # =====================================================
-
-    elif "open youtube" in command:
-
-        speak("Opening YouTube")
-
-        webbrowser.open("https://youtube.com")
-
-        return True
-
-    # =====================================================
-    # OPEN CHROME
-    # =====================================================
-
-    elif "open chrome" in command:
-
-        speak("Opening Chrome")
-
-        chrome_path = "C:/Program Files/Google/Chrome/Application/chrome.exe"
-
-        url = "https://google.com"
-
-        os.system(f'start "" "{chrome_path}" {url}')
-
-        return True
-
-    # =====================================================
-    # OPEN BRAVE
-    # =====================================================
-
-    elif "open brave" in command:
-
-        speak("Opening Brave")
-
-        os.system("start brave")
-
-        return True
-
-    # =====================================================
-    # OPEN VS CODE
-    # =====================================================
-
-    elif "open vs code" in command or "open vscode" in command:
-
-        speak("Opening VS Code")
-
-        os.system("code .")
-
-        return True
-
-    # =====================================================
-    # OPEN NOTEPAD
-    # =====================================================
-
-    elif "open notepad" in command:
-
-        speak("Opening Notepad")
-
-        os.system("start notepad")
-
-        return True
-
-    # =====================================================
     # OPEN MY PC
     # =====================================================
 
-    elif "open my pc" in command:
+    elif "open my pc" in command or "open this pc" in command:
 
         speak("Opening This PC")
 
@@ -192,25 +232,19 @@ def execute_command(command):
         return True
 
     # =====================================================
-    # PLAY MUSIC
+    # PLAY SONG
     # =====================================================
 
     elif "play" in command:
 
-        speak("Playing music")
-
-        song = command
-
-        song = song.replace("play music", "")
-        song = song.replace("play", "")
-        song = song.replace("on youtube", "")
-        song = song.replace("in brave", "")
+        song = command.replace("play", "")
+        song = song.replace("music", "")
         song = song.strip()
 
         if song == "":
             song = "trending songs"
 
-        current_song = song
+        speak(f"Playing {song}")
 
         pywhatkit.playonyt(song)
 
@@ -220,22 +254,55 @@ def execute_command(command):
     # CHANGE SONG
     # =====================================================
 
-    elif "change song" in command:
+    elif "change to" in command:
 
-        new_song = command.replace("change song", "")
-        new_song = new_song.replace("to", "")
-        new_song = new_song.strip()
+        song = command.replace("change to", "")
+        song = song.strip()
 
-        if new_song == "":
-
-            speak("Tell me the song name")
+        if song == "":
+            speak("Song name missing")
             return True
 
-        current_song = new_song
+        speak(f"Changing song to {song}")
 
-        speak(f"Changing song to {new_song}")
+        pywhatkit.playonyt(song)
 
-        pywhatkit.playonyt(new_song)
+        return True
+
+    # =====================================================
+    # STOP MUSIC
+    # =====================================================
+
+    elif "stop music" in command:
+
+        speak("Stopping music")
+
+        os.system("taskkill /f /im chrome.exe")
+        os.system("taskkill /f /im brave.exe")
+
+        return True
+
+    # =====================================================
+    # PAUSE MUSIC
+    # =====================================================
+
+    elif "pause music" in command:
+
+        speak("Pausing music")
+
+        pyautogui.press("k")
+
+        return True
+
+    # =====================================================
+    # RESUME MUSIC
+    # =====================================================
+
+    elif "resume music" in command:
+
+        speak("Resuming music")
+
+        pyautogui.press("k")
 
         return True
 
@@ -264,51 +331,20 @@ def execute_command(command):
         return True
 
     # =====================================================
-    # PAUSE MUSIC
-    # =====================================================
-
-    elif "pause music" in command or "pause song" in command:
-
-        speak("Pausing music")
-
-        pyautogui.press("k")
-
-        return True
-
-    # =====================================================
-    # RESUME MUSIC
-    # =====================================================
-
-    elif "resume music" in command or "resume song" in command:
-
-        speak("Resuming music")
-
-        pyautogui.press("k")
-
-        return True
-
-    # =====================================================
-    # STOP MUSIC
-    # =====================================================
-
-    elif "stop music" in command:
-
-        speak("Stopping music")
-
-        os.system("taskkill /f /im chrome.exe")
-        os.system("taskkill /f /im brave.exe")
-
-        return True
-
-    # =====================================================
     # SLEEP MODE
     # =====================================================
 
-    elif "sleep mode on" in command or "sleep my pc" in command:
+    elif (
+        "sleep mode" in command
+        or "sleep my pc" in command
+        or "sleep pc" in command
+    ):
 
         speak("Putting PC to sleep")
 
-        os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+        os.system(
+            "rundll32.exe powrprof.dll,SetSuspendState 0,1,0"
+        )
 
         return True
 
@@ -337,7 +373,7 @@ def execute_command(command):
         return True
 
     # =====================================================
-    # NO COMMAND FOUND
+    # UNKNOWN
     # =====================================================
 
     return False
