@@ -323,9 +323,6 @@ def execute_command(command):
 
             return True
 
-    # =====================================================
-    # OPEN MY PC
-    # =====================================================
 
     elif "open my pc" in command or "open this pc" in command:
 
@@ -335,9 +332,7 @@ def execute_command(command):
 
         return True
 
-    # =====================================================
-    # PLAY SONG
-    # =====================================================
+ 
 
     elif "play" in command:
 
@@ -354,9 +349,6 @@ def execute_command(command):
 
         return True
 
-    # =====================================================
-    # CHANGE SONG
-    # =====================================================
 
     elif "change to" in command:
 
